@@ -69,6 +69,7 @@ export interface ConversationContextType {
   selectConversationIndex: (index: number) => void;
   selectedConversation: ConversationsType;
   sendMessage: (recipients: string[], message: string) => void;
+  openContactConversation: (contactId: string) => void;
 }
 
 export interface SocketContextType {
@@ -81,6 +82,7 @@ export interface ConversationsTabProps {
 
 export interface ContactsTabProps {
   contactContext: ContactsContextType | null;
+  handleChangeTabs: (tab: string) => void;
 }
 
 export interface MessagesType {

@@ -149,6 +149,21 @@ export const ConversationsProvider = ({
     addMessageToConversation({ recipients, message, id });
   };
 
+  const findConversationIndex = (contactId: string) => {
+    return conversations.findIndex((conversation: ConversationsType) =>
+      arrayEquality(conversation.recipients, [contactId])
+    );
+  };
+
+  const openContactConversation = (contactId: string) => {
+    let findContactIndexInConversations = findConversationIndex(contactId);
+    if (findContactIndexInConversations === -1) {
+      createConversation([contactId]);
+      findContactIndexInConversations = findConversationIndex(contactId);
+    }
+    setSelectedConversationIndex(findContactIndexInConversations);
+  };
+
   return (
     <ConversationsContext.Provider
       value={{
@@ -157,6 +172,7 @@ export const ConversationsProvider = ({
         selectConversationIndex: setSelectedConversationIndex,
         selectedConversation: formattedConversations[selectedConversationIndex],
         sendMessage: sendMessage,
+        openContactConversation,
       }}
     >
       {children}

@@ -9,9 +9,7 @@ export const ConversationsTab = ({
       {conversationsContext?.conversations.map((conversation, index) => (
         <li
           key={index}
-          className={`sidebar-tab-link conversation-link ${
-            conversation.selected && "selected"
-          }`}
+          className={`sidebar-tab-link  ${conversation.selected && "selected"}`}
           onClick={() => conversationsContext?.selectConversationIndex(index)}
         >
           {conversation.recipients

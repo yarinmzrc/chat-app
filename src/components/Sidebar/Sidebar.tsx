@@ -57,7 +57,10 @@ export const Sidebar = ({ id }: SidebarProps) => {
           {tabValue === CONVERSATIONS ? (
             <ConversationsTab conversationsContext={conversationsContext} />
           ) : (
-            <ContactsTab contactContext={contactContext} />
+            <ContactsTab
+              handleChangeTabs={handleChangeTabs}
+              contactContext={contactContext}
+            />
           )}
         </div>
         <div className="sidebar-id-wrapper">Your Id: {id}</div>

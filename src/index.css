@@ -105,16 +105,13 @@ button:disabled {
 }
 
 .sidebar-tab-link {
+  cursor: pointer;
   list-style: none;
   padding: 12px 8px;
   border-bottom: 2px solid #747bff;
   transition: 200ms ease-in;
   height: 40px;
   overflow: hidden;
-}
-
-.conversation-link {
-  cursor: pointer;
 }
 
 .sidebar-wrapper-no-info {
@@ -140,7 +137,7 @@ button:disabled {
   background-color: #3c3d53;
 }
 
-.conversation-link.selected {
+.sidebar-tab-link.selected {
   background-color: #1b1b24;
 }
 
