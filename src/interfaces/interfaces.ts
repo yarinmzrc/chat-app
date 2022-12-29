@@ -91,3 +91,9 @@ export interface MessagesType {
   senderName: string;
   fromMe: boolean;
 }
+
+export interface AddMessageToConversationProps {
+  recipients: string[];
+  message: string;
+  id: string;
+}

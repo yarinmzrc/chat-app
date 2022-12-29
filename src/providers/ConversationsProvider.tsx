@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect, useCallback } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 import {
+  AddMessageToConversationProps,
   ConversationContextType,
   ConversationsProviderProps,
   ConversationsType,
@@ -22,6 +23,7 @@ export const ConversationsProvider = ({
   id,
   children,
 }: ConversationsProviderProps) => {
+  const [selectedConversationIndex, setSelectedConversationIndex] = useState(0);
   const [conversations, setConversations] = useLocalStorage(
     "conversations",
     []
@@ -45,8 +47,6 @@ export const ConversationsProvider = ({
     ]);
   };
 
-  const [selectedConversationIndex, setSelectedConversationIndex] = useState(0);
-
   const formattedConversations: ExpandedConversationsType[] = conversations.map(
     (conversation: ConversationsType, index: number) => {
       const recipients = conversation.recipients.map(
@@ -65,7 +65,6 @@ export const ConversationsProvider = ({
           };
         }
       );
-
       const messages = conversation.messages.map((message) => {
         const contact = contactContext?.contacts.find(
           (contact) => contact.id === message.id
@@ -79,75 +78,6 @@ export const ConversationsProvider = ({
       return { ...conversation, messages, recipients, selected };
     }
   );
-
-  interface AddMessageToConversationProps {
-    recipients: string[];
-    message: string;
-    id: string;
-  }
-
-  const addMessageToConversation = useCallback(
-    ({ recipients, message, id }: AddMessageToConversationProps) => {
-      setConversations((prevConversations: ConversationsType[]) => {
-        let madeChange = false;
-        const newMessage = { id, message };
-        let newConversations = prevConversations.map((conversation) => {
-          if (arrayEquality(conversation.recipients, recipients)) {
-            madeChange = true;
-            return {
-              ...conversation,
-              messages: [...conversation.messages, newMessage],
-            };
-          }
-          return conversation;
-        });
-
-        if (madeChange) {
-          const convesationMadeChange = prevConversations.find((conversation) =>
-            arrayEquality(conversation.recipients, recipients)
-          );
-          if (convesationMadeChange?.messages != undefined) {
-            convesationMadeChange?.messages.push({
-              ...newMessage,
-              fromMe: false,
-              senderName: "",
-            });
-          }
-          newConversations = newConversations.filter((conversation) => {
-            return !arrayEquality(conversation.recipients, recipients);
-          });
-          if (convesationMadeChange !== undefined) {
-            newConversations.unshift(convesationMadeChange);
-          }
-          setSelectedConversationIndex(0);
-          return newConversations;
-        } else {
-          return [...prevConversations, { recipients, messages: [newMessage] }];
-        }
-      });
-    },
-    [setConversations]
-  );
-
-  const recieveMessage = async () => {
-    if (socketContext?.socket == null) return;
-
-    socketContext.socket.on("recieve-message", addMessageToConversation);
-
-    return () =>
-      socketContext.socket.removeListener("recieve-message", () => {
-        return;
-      });
-  };
-
-  useEffect(() => {
-    recieveMessage();
-  }, [socketContext?.socket, addMessageToConversation]);
-
-  const sendMessage = (recipients: string[], message: string) => {
-    socketContext?.socket.emit("send-message", { recipients, message });
-    addMessageToConversation({ recipients, message, id });
-  };
 
   const findConversationIndex = (contactId: string) => {
     return conversations.findIndex((conversation: ConversationsType) =>
@@ -164,6 +94,82 @@ export const ConversationsProvider = ({
       setSelectedConversationIndex(findContactIndexInConversations);
     }
   };
+
+  const addMessageToConversation = useCallback(
+    ({ recipients, message, id }: AddMessageToConversationProps) => {
+      setConversations((prevConversations: ConversationsType[]) => {
+        const newMessage = { id, message };
+        let newConversations = prevConversations.map((conversation) => {
+          if (arrayEquality(conversation.recipients, recipients)) {
+            return {
+              ...conversation,
+              messages: [...conversation.messages, newMessage],
+            };
+          }
+          return conversation;
+        });
+        newConversations = liftConversationUp(
+          prevConversations,
+          recipients,
+          newMessage,
+          newConversations
+        );
+        setSelectedConversationIndex(0);
+        return newConversations;
+      });
+    },
+    [setConversations]
+  );
+
+  const liftConversationUp = (
+    prevConversations: ConversationsType[],
+    recipients: string[],
+    newMessage: { id: string; message: string },
+    newConversations: {
+      messages: { id: string; message: string }[];
+      recipients: string[] | RecipientsType[];
+    }[]
+  ) => {
+    const convesationMadeChange = prevConversations.find((conversation) =>
+      arrayEquality(conversation.recipients, recipients)
+    );
+    if (convesationMadeChange?.messages != undefined) {
+      convesationMadeChange?.messages.push({
+        ...newMessage,
+        fromMe: false,
+        senderName: "",
+      });
+    }
+    newConversations = newConversations.filter((conversation) => {
+      return !arrayEquality(conversation.recipients, recipients);
+    });
+    if (convesationMadeChange !== undefined) {
+      newConversations.unshift(convesationMadeChange);
+    }
+    return newConversations;
+  };
+
+  /* Socket Related Functions */
+
+  const recieveMessage = async () => {
+    if (socketContext?.socket == null) return;
+
+    socketContext.socket.on("recieve-message", addMessageToConversation);
+
+    return () =>
+      socketContext.socket.removeListener("recieve-message", () => {
+        return;
+      });
+  };
+
+  const sendMessage = (recipients: string[], message: string) => {
+    socketContext?.socket.emit("send-message", { recipients, message });
+    addMessageToConversation({ recipients, message, id });
+  };
+
+  useEffect(() => {
+    recieveMessage();
+  }, [socketContext?.socket, addMessageToConversation]);
 
   return (
     <ConversationsContext.Provider
