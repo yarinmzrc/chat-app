@@ -70,13 +70,11 @@ export const Sidebar = ({ id }: SidebarProps) => {
       </div>
 
       <Modal open={isModalOpen} onClose={handleCloseModal}>
-        <div>
-          {conversationOpen ? (
-            <ConversationModal onClose={handleCloseModal}></ConversationModal>
-          ) : (
-            <ContactModal onClose={handleCloseModal}></ContactModal>
-          )}
-        </div>
+        {conversationOpen ? (
+          <ConversationModal onClose={handleCloseModal}></ConversationModal>
+        ) : (
+          <ContactModal onClose={handleCloseModal}></ContactModal>
+        )}
       </Modal>
     </div>
   );
