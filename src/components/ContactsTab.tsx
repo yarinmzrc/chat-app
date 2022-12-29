@@ -6,7 +6,7 @@ export const ContactsTab = ({ contactContext }: ContactsTabProps) => {
     <div>
       {hasAnyContacts ? (
         contactContext?.contacts.map((contact, index) => (
-          <div className="conversation-link" key={contact.id}>{`${index + 1}. ${
+          <div className="sidebar-tab-link" key={contact.id}>{`${index + 1}. ${
             contact.name
           }`}</div>
         ))
