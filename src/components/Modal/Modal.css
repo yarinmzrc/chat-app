@@ -1,0 +1,28 @@
+.modal-wrapper {
+  position: fixed;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+}
+
+.modal {
+  opacity: 1;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #2a2b3b;
+  border-radius: 4px;
+  padding: 40px;
+  z-index: 100;
+  animation: fadeIn 200ms ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
