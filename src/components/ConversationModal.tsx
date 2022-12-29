@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { ConversationModalProps } from "../interfaces/interfaces";
 import { useContacts } from "../providers/ContactProvider";
 import { useConversations } from "../providers/ConversationsProvider";
@@ -21,7 +21,8 @@ export const ConversationModal = ({ onClose }: ConversationModalProps) => {
     });
   };
 
-  const handleSubmitConversation = () => {
+  const handleSubmitConversation = (e: FormEvent) => {
+    e.preventDefault();
     if (selectedContacts.length === 0) return;
     const response = conversationContext?.createConversation(selectedContacts);
     if (response) {
@@ -32,14 +33,21 @@ export const ConversationModal = ({ onClose }: ConversationModalProps) => {
     }
   };
 
-  return contactsContext?.contacts.length === 0 ? (
+  const noContactsMessage = (
     <div className="modal-wrapper-no-contacts">
       <h3 className="modal-title">No Contacts</h3>
     </div>
+  );
+
+  return contactsContext?.contacts.length === 0 ? (
+    noContactsMessage
   ) : (
     <div>
       <h3 className="modal-title">Create Conversation</h3>
-      <form>
+      <form
+        onSubmit={handleSubmitConversation}
+        className="conversation-modal-form"
+      >
         <ul className="contacts-wrapper">
           {contactsContext?.contacts.map((contact) => (
             <li
@@ -53,14 +61,11 @@ export const ConversationModal = ({ onClose }: ConversationModalProps) => {
             </li>
           ))}
         </ul>
+        <div className="error-message">{error ? error : ""}</div>
+        <button disabled={selectedContacts.length === 0} type="submit">
+          Create
+        </button>
       </form>
-      <div className="error-message">{error ? error : ""}</div>
-      <button
-        disabled={selectedContacts.length === 0}
-        onClick={handleSubmitConversation}
-      >
-        Create
-      </button>
     </div>
   );
 };

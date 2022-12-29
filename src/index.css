@@ -83,6 +83,11 @@ button:disabled {
   font-weight: 400;
 }
 
+.conversation-modal-form {
+  display: flex;
+  flex-direction: column;
+}
+
 .contact-input {
   all: unset;
   padding: 8px;
