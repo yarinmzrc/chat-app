@@ -156,12 +156,13 @@ export const ConversationsProvider = ({
   };
 
   const openContactConversation = (contactId: string) => {
-    let findContactIndexInConversations = findConversationIndex(contactId);
+    const findContactIndexInConversations = findConversationIndex(contactId);
     if (findContactIndexInConversations === -1) {
       createConversation([contactId]);
-      findContactIndexInConversations = findConversationIndex(contactId);
+      setSelectedConversationIndex(formattedConversations.length);
+    } else {
+      setSelectedConversationIndex(findContactIndexInConversations);
     }
-    setSelectedConversationIndex(findContactIndexInConversations);
   };
 
   return (
