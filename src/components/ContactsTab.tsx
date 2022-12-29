@@ -5,27 +5,33 @@ export const ContactsTab = ({
   contactContext,
   handleChangeTabs,
 }: ContactsTabProps) => {
-  const hasAnyContacts = contactContext?.contacts.length !== 0;
+  const hasNoContacts = contactContext?.contacts.length === 0;
   const conversationsContext = useConversations();
+
+  const noContactsMessage = (
+    <div className="sidebar-tab-wrapper">
+      <div className="sidebar-wrapper-no-info">You have no contacts.</div>
+    </div>
+  );
+
+  const handleSelectContact = (id: string) => {
+    conversationsContext?.openContactConversation(id);
+    handleChangeTabs("Conversations");
+  };
 
   return (
     <div>
-      {hasAnyContacts ? (
-        contactContext?.contacts.map((contact, index) => (
-          <div
-            onClick={() => {
-              conversationsContext?.openContactConversation(contact.id);
-              handleChangeTabs("Conversations");
-            }}
-            className="sidebar-tab-link"
-            key={contact.id}
-          >{`${index + 1}. ${contact.name}`}</div>
-        ))
-      ) : (
-        <div className="sidebar-tab-wrapper">
-          <div className="sidebar-wrapper-no-info">You have no contacts.</div>
-        </div>
-      )}
+      {hasNoContacts
+        ? noContactsMessage
+        : contactContext?.contacts.map((contact, index) => (
+            <div
+              onClick={() => {
+                handleSelectContact(contact.id);
+              }}
+              className="sidebar-tab-link"
+              key={contact.id}
+            >{`${index + 1}. ${contact.name}`}</div>
+          ))}
     </div>
   );
 };
