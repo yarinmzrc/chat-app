@@ -38,7 +38,7 @@ export const ConversationsProvider = ({
         conversationExists = true;
       }
     });
-    if (conversationExists) return "Conversation exists already";
+    if (conversationExists) return "Conversation already exists";
     setConversations((prevConversations: ConversationsType[]) => [
       ...prevConversations,
       { recipients, messages: [] },
