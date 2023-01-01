@@ -71,6 +71,8 @@ export const OpenConversation = () => {
         >
           <input
             value={message}
+            ref={conversationsContext?.inputConversationRef}
+            autoFocus
             className="send-message-input"
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Send Message"

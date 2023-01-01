@@ -20,7 +20,13 @@ export const ContactModal = ({ onClose }: ContactModalProps) => {
   return (
     <form className="create-contact-wrapper" onSubmit={handleCreateContact}>
       <h3 className="modal-title">Create Contact</h3>
-      <input className="contact-input" required ref={idRef} placeholder="Id" />
+      <input
+        autoFocus
+        className="contact-input"
+        required
+        ref={idRef}
+        placeholder="Id"
+      />
       <input
         className="contact-input"
         required

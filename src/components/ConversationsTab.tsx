@@ -38,6 +38,7 @@ export const ConversationsTab = ({
 
   const handleSelectConversation = (index: number) => {
     conversationsContext?.selectConversationIndex(index);
+    conversationsContext?.inputConversationRef.current.focus();
   };
 
   return hasNoConversations ? (

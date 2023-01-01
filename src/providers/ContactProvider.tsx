@@ -12,11 +12,14 @@ export const useContacts = () => {
   return useContext(ContactsContext);
 };
 
-export const ContactsProvider = ({ children }: ContactsProviderProps) => {
+export const ContactsProvider = ({
+  id: myId,
+  children,
+}: ContactsProviderProps) => {
   const [contacts, setContacts] = useLocalStorage("contacts", []);
 
   const createContact = (id?: string, name?: string) => {
-    if (!id || !name) return;
+    if (!id || !name || id === myId) return;
     if (contacts.length > 0) {
       const idInContacts = contacts.findIndex(
         (contact: { id: string }) => contact.id === id

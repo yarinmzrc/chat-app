@@ -1,4 +1,10 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, {
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+} from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 import {
   AddMessageToConversationProps,
@@ -28,7 +34,8 @@ export const ConversationsProvider = ({
     "conversations",
     []
   );
-
+  const inputConversationRef =
+    useRef() as React.MutableRefObject<HTMLInputElement>;
   const contactContext = useContacts();
   const socketContext = useSocket();
 
@@ -93,6 +100,7 @@ export const ConversationsProvider = ({
     } else {
       setSelectedConversationIndex(findContactIndexInConversations);
     }
+    inputConversationRef.current.focus();
   };
 
   const addMessageToConversation = useCallback(
@@ -115,6 +123,7 @@ export const ConversationsProvider = ({
           newConversations
         );
         setSelectedConversationIndex(0);
+        inputConversationRef.current.focus();
         return newConversations;
       });
     },
@@ -180,6 +189,7 @@ export const ConversationsProvider = ({
         selectedConversation: formattedConversations[selectedConversationIndex],
         sendMessage: sendMessage,
         openContactConversation,
+        inputConversationRef,
       }}
     >
       {children}

@@ -33,6 +33,7 @@ export interface ContactsType {
 }
 
 export interface ContactsProviderProps {
+  id: string;
   children?: ReactNode;
 }
 
@@ -70,6 +71,7 @@ export interface ConversationContextType {
   selectedConversation: ConversationsType;
   sendMessage: (recipients: string[], message: string) => void;
   openContactConversation: (contactId: string) => void;
+  inputConversationRef: React.MutableRefObject<HTMLInputElement>;
 }
 
 export interface SocketContextType {
